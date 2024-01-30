@@ -1,0 +1,4 @@
+.react-calendar__month-view__days, .react-calendar__month-view__weekdays {
+  /*gap: 1rem !important;*/
+  background-color: transparent;
+}
