@@ -3,28 +3,47 @@ import { ConnectXButton } from '../';
 import cn from 'classnames';
 import ProjectLogo from '../../assets/project-logo.svg';
 import { IoMenu } from 'react-icons/io5';
-import { useRef } from 'react';
+import { RefObject, useRef } from 'react';
 import { HeaderLink } from './types.ts';
 import { HEADER_LINKS } from './config.ts';
-import { MobileMenu } from '../../modals';
+import { MobileMenu, RegisterMenu } from '../../modals';
+import { useDBUser, useXAccount } from '../../hooks';
 
 const Header = () => {
-	const menuModal = useRef<HTMLDialogElement>(null);
 	const location = useLocation();
 
-	const showModal = () => {
-		if (!menuModal?.current) return;
-		menuModal.current.showModal();
+	const { userStats, isFetching: isLoadingUserStats } = useDBUser();
+	const { xAccessToken } = useXAccount();
+
+	const menuModal = useRef<HTMLDialogElement>(null);
+	const registerModal = useRef<HTMLDialogElement>(null);
+
+	const showModal = (ref: RefObject<HTMLDialogElement>) => {
+		if (!ref?.current) return;
+		ref.current.showModal();
 	};
 
-	const hideModal = () => {
-		if (!menuModal?.current) return;
-		menuModal.current.close();
+	const hideModal = (ref: RefObject<HTMLDialogElement>) => {
+		if (!ref?.current) return;
+		ref.current.close();
+	};
+
+	const renderRegisterConnectRegisterButton = () => {
+		if (isLoadingUserStats) return <div />;
+
+		if (xAccessToken && !userStats?.total_points)
+			return (
+				<button className='btn btn-secondary' onClick={() => showModal(registerModal)}>
+					register
+				</button>
+			);
+
+		return <ConnectXButton />;
 	};
 
 	return (
 		<div className='navbar flex flex-row justify-between items-center w-full gap-4 p-4 bg-[#23232599] h-[80px] min-h-[80px]'>
-			<IoMenu className='md:hidden w-[32px] h-[32px]' width={32} height={32} onClick={showModal} />
+			<IoMenu className='md:hidden w-[32px] h-[32px]' width={32} height={32} onClick={() => showModal(menuModal)} />
 			<div className='flex-1'>
 				<img className='mt-[4px]' alt={`${import.meta.env.VITE_TICKER} logo`} src={ProjectLogo} />
 			</div>
@@ -39,10 +58,9 @@ const Header = () => {
 					})}
 				</div>
 			</div>
-			<div className='flex-1 justify-end items-center'>
-				<ConnectXButton />
-			</div>
-			<MobileMenu ref={menuModal} hideModal={hideModal} />
+			<div className='flex-1 justify-end items-center'>{renderRegisterConnectRegisterButton()}</div>
+			<MobileMenu ref={menuModal} hideModal={() => hideModal(menuModal)} />
+			<RegisterMenu ref={registerModal} hideModal={() => hideModal(registerModal)} />
 		</div>
 	);
 };

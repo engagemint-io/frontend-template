@@ -9,3 +9,8 @@ export const userStatsState = atom<any | null>({
 	key: 'EPOCH_USER_STATS_STATE',
 	default: null
 });
+
+export const isFetchingUserStatsState = atom<boolean>({
+	key: 'IS_FETCHING_USER_STATS_STATE',
+	default: false
+});
