@@ -2,13 +2,14 @@ import { UserXStatsProps } from './types';
 import XIconWhite from '../../../../assets/x-icon-white.svg';
 import { ConnectXButton } from '../../../../components';
 import { useEffect, useState } from 'react';
-import { useXAccount } from '../../../../hooks';
+import { useCurrentEpoch, useXAccount } from '../../../../hooks';
 import { toast } from 'react-toastify';
 import { useRecoilState } from 'recoil';
 import { userStatsState } from '../../../../recoil/atoms';
 
-const UserXStats = ({ currentEpoch }: UserXStatsProps) => {
+const UserXStats = ({}: UserXStatsProps) => {
 	const { xAccessToken } = useXAccount();
+	const { currentEpoch } = useCurrentEpoch();
 
 	const [userStats, setUserStats] = useRecoilState<any>(userStatsState);
 	const [fetchError, setFetchError] = useState<any>();

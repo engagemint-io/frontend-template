@@ -1,1 +1,1 @@
-export * from './EpochCalculator.ts';
+export * from './epochCalculator.ts';

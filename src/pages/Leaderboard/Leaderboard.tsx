@@ -38,7 +38,7 @@ const Leaderboard = () => {
 		fetchLeaderboard().then();
 	}, [currentEpoch]);
 
-	const changeEpoch = (newEpoch: number) => {
+	const changeEpoch = (newEpoch?: number) => {
 		queryParams.epoch = String(newEpoch);
 		navigate({ search: queryString.stringify(queryParams) }, { replace: true });
 	};
@@ -139,7 +139,7 @@ const Leaderboard = () => {
 					<MdOutlineArrowForwardIos className='rounded-lg' />
 				</button>
 			</div>
-			<UserXStats currentEpoch={currentEpoch} />
+			<UserXStats />
 			<div className='overflow-auto flex-1 rounded-[1.5rem] md:border border-solid border-em-border-row bg-em-card'>{renderTable()}</div>
 		</div>
 	);

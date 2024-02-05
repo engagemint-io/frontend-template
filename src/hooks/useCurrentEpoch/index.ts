@@ -4,7 +4,7 @@ import { getCurrentEpochNumber, getCurrentEpochStartDate } from '../../utils';
 import { DateTime } from 'luxon';
 
 export const useCurrentEpoch = () => {
-	const [currentEpoch, setCurrentEpoch] = useState<number>();
+	const [currentEpoch, setCurrentEpoch] = useState<number>(0);
 	const [currentEpochStartDate, setCurrentEpochStartDate] = useState<DateTime>();
 	const [currentEpochEndDate, setCurrentEpochEndDate] = useState<DateTime>();
 
