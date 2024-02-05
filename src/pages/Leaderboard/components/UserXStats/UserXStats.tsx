@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react';
 import { useXAccount } from '../../../../hooks';
 import { toast } from 'react-toastify';
 import { useRecoilState } from 'recoil';
-import { userStatsState } from '../../../../recoil/atoms/userStats.ts';
+import { userStatsState } from '../../../../recoil/atoms';
 
 const UserXStats = ({ currentEpoch }: UserXStatsProps) => {
-	const { xAccessToken, setXProfileImageUrl } = useXAccount();
+	const { xAccessToken } = useXAccount();
 
 	const [userStats, setUserStats] = useRecoilState<any>(userStatsState);
 	const [fetchError, setFetchError] = useState<any>();
@@ -35,7 +35,6 @@ const UserXStats = ({ currentEpoch }: UserXStatsProps) => {
 			fetchUserStats().then((data: { stats: any; profile_image_url: string }) => {
 				setFetchError(undefined);
 				setUserStats(data.stats);
-				setXProfileImageUrl(data.profile_image_url);
 			});
 		}
 	}, [xAccessToken, currentEpoch]);

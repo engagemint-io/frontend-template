@@ -2,7 +2,7 @@ import { IconType } from 'react-icons';
 
 export type PointCalculatorProps = {};
 
-export type PointItemType = {
+export type PointCalculatorItem = {
 	title: string;
 	key: string;
 	icon: IconType;

@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import queryString from 'query-string';
 import { UserXStats } from './components';
 import { PiCalendarBlankBold } from 'react-icons/pi';
-import useCurrentEpoch from '../../hooks/useCurrentEpoch/useCurrentEpoch.ts';
+import { useCurrentEpoch } from '../../hooks';
 
 const Leaderboard = () => {
 	const navigate = useNavigate();

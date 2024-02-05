@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 import { ConnectXButton } from '../../components';
 import { useXAccount } from '../../hooks';
 import { useRecoilValue } from 'recoil';
-import { userStatsState } from '../../recoil/atoms/userStats.ts';
+import { userStatsState } from '../../recoil/atoms';
 import { forwardRef } from 'react';
 
 const MobileMenu = forwardRef<HTMLDialogElement, MobileMenuProps>(({ hideModal }, ref) => {
