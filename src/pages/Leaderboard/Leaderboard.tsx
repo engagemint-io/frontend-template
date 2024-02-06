@@ -7,22 +7,31 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import queryString from 'query-string';
 import { UserXStats } from './components';
 import { PiCalendarBlankBold } from 'react-icons/pi';
-import { useCurrentEpoch } from '../../hooks';
+import { getFormattedDateRangeForEpoch } from '../../utils';
+import { useCurrentEpoch, useDBProjectConfig, useDBUser } from '../../hooks';
+import UserXEpochStatsBadge from './components/UserXEpochStatsBadge/UserXEpochStatsBadge.tsx';
 
 const Leaderboard = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
+
+	const { projectConfig } = useDBProjectConfig();
+	const { userXAccountId } = useDBUser();
+	const { currentEpoch } = useCurrentEpoch();
+
+	console.log('currentEpoch', currentEpoch);
+
 	const queryParams = useMemo(() => queryString.parse(location.search), [location.search]);
 
 	const [fetchError, setFetchError] = useState<any>();
 	const [leaderboard, setLeaderboard] = useState<LeaderboardRow[]>();
 
-	const { currentEpoch } = useCurrentEpoch();
+	const selectedEpoch = useMemo(() => parseInt((queryParams?.epoch as string) || '1'), [queryParams]);
 
 	useEffect(() => {
 		const fetchLeaderboard = async () => {
 			try {
-				const response = await fetch(`${import.meta.env.VITE_API_URL}/leaderboard?ticker=${import.meta.env.VITE_TICKER}&epoch=${currentEpoch}`);
+				const response = await fetch(`${import.meta.env.VITE_API_URL}/leaderboard?ticker=${import.meta.env.VITE_TICKER}&epoch=${selectedEpoch}`);
 				const json = await response.json();
 				setLeaderboard(
 					json.data.sort((a: any, b: any) => {
@@ -36,7 +45,7 @@ const Leaderboard = () => {
 			}
 		};
 		fetchLeaderboard().then();
-	}, [currentEpoch]);
+	}, [selectedEpoch]);
 
 	const changeEpoch = (newEpoch?: number) => {
 		queryParams.epoch = String(newEpoch);
@@ -86,12 +95,13 @@ const Leaderboard = () => {
 			<table className='table table-pin-rows table-pin-cols rounded-2xl '>
 				<thead className='bg-em-border-row rounded'>
 					<tr className='bg-em-border-row rounded'>
-						<th className='bg-em-border-row p-5'>Rank</th>
-						<th className='bg-em-border-row p-5'>Account ID</th>
+						<td className='bg-em-border-row p-5'>Rank</td>
+						<td className='bg-em-border-row p-5'>X Username</td>
 						<td className='bg-em-border-row p-5'>Total Points</td>
 						<td className='bg-em-border-row p-5'>View Points</td>
 						<td className='bg-em-border-row p-5'>Video View Points</td>
 						<td className='bg-em-border-row p-5'>Favorite Points</td>
+						<td className='bg-em-border-row p-5'>Reply Points</td>
 						<td className='bg-em-border-row p-5'>Retweet Points</td>
 						<td className='bg-em-border-row p-5'>Quote Points</td>
 					</tr>
@@ -99,23 +109,27 @@ const Leaderboard = () => {
 				<tbody>
 					{leaderboard.map((row, index) => {
 						return (
-							<tr className='first: rounded-tl-2xl border-em-border-row' key={row.user_account_id}>
-								<th className='bg-em-card p-5'>
-									{/*//MARK: REMOVE THIS INDEX BACKUP FOR PRODUCTION*/}
+							<tr
+								className={cn('border-em-border-row bg-em-card', {
+									'bg-[#7832E945]': row.user_account_id === userXAccountId
+								})}
+								key={row.user_account_id}>
+								<td className='bg-transparent p-5'>
 									<div
 										className={cn('flex items-center justify-center px-4 py-3 rounded-2xl ', getRankClassName(row.rank || index + 1), {
-											'bg-primary': row.user_account_id === '1740784038213029888'
+											'!bg-[#7832E9B0]': row.user_account_id === userXAccountId
 										})}>
 										{row.rank || index + 1}
 									</div>
-								</th>
-								<th className='bg-em-card p-5'>{row.user_account_id}</th>
-								<td className='bg-em-card p-5 font-black text-white'>{row.total_points}</td>
-								<td className='bg-em-card p-5'>{row.view_points}</td>
-								<td className='bg-em-card p-5'>{row.video_view_points}</td>
-								<td className='bg-em-card p-5'>{row.favorite_points}</td>
-								<td className='bg-em-card p-5'>{row.retweet_points}</td>
-								<td className='bg-em-card p-5'>{row.quote_points}</td>
+								</td>
+								<td className='bg-transparent p-5 text-lg text-em-headline font-semibold'>{row.username || row.user_account_id}</td>
+								<td className='p-5 text-lg text-em-headline font-semibold'>{row.total_points}</td>
+								<td className='p-5 text-lg text-em-paragraph font-medium'>{row.view_points}</td>
+								<td className='p-5 text-lg text-em-paragraph font-medium'>{row.video_view_points}</td>
+								<td className='p-5 text-lg text-em-paragraph font-medium'>{row.favorite_points}</td>
+								<td className='p-5 text-lg text-em-paragraph font-medium'>{row.reply_points}</td>
+								<td className='p-5 text-lg text-em-paragraph font-medium'>{row.retweet_points}</td>
+								<td className='p-5 text-lg text-em-paragraph font-medium'>{row.quote_points}</td>
 							</tr>
 						);
 					})}
@@ -125,21 +139,31 @@ const Leaderboard = () => {
 	};
 
 	return (
-		<div className='flex flex-col px-4 pb-4 pt-8 md:py-[5rem] md:px-[10rem] overflow-auto h-screen w-full gap-4'>
-			<h1 className='text-em-headline text-5xl font-bold tracking-tight mb-4'>Leaderboard</h1>
-			<div className='flex flex-row w-full md:w-fit items-center justify-between gap-2 md:gap-4'>
-				<button className={'border border-em-border-row btn btn-square min-h-8 h-8 w-8'} onClick={() => changeEpoch(currentEpoch > 1 ? currentEpoch - 1 : 1)}>
-					<MdOutlineArrowBackIos className='rounded-lg' />
-				</button>
-				<div className='badge badge-accent font-bold md:text-xl p-5'>EPOCH #{currentEpoch}</div>
-				<div className='badge badge-secondary font-bold md:text-xl p-5 gap-2'>
-					Jan 15-22 <PiCalendarBlankBold />
+		<div className='flex flex-col px-[1rem] py-[8rem] md:px-[10rem] md:py-[10rem] overflow-auto h-screen w-full gap-4'>
+			<div className='flex flex-row justify-between items-center'>
+				<div>
+					<h1 className='text-em-headline text-3xl md:text-5xl font-bold tracking-tight mb-4'>Leaderboard</h1>
+					<div className='flex flex-row w-full md:w-fit items-center justify-between gap-2 md:gap-4'>
+						<button className={'border border-em-border-row btn btn-square min-h-8 h-8 w-8'} onClick={() => changeEpoch(selectedEpoch > 1 ? selectedEpoch - 1 : 1)}>
+							<MdOutlineArrowBackIos className='rounded-lg' />
+						</button>
+						<div className='badge badge-accent font-bold text-xs md:text-xl p-5'>EPOCH #{selectedEpoch}</div>
+						<div className='badge badge-secondary font-bold text-xs md:text-xl p-5 gap-2'>
+							{projectConfig?.epoch_start_date_utc &&
+								projectConfig.epoch_length_days &&
+								getFormattedDateRangeForEpoch(projectConfig.epoch_start_date_utc, projectConfig.epoch_length_days, selectedEpoch)}{' '}
+							<PiCalendarBlankBold />
+						</div>
+						{selectedEpoch < currentEpoch && (
+							<button className='border border-em-border-row btn btn-square min-h-8 h-8 w-8' onClick={() => changeEpoch(selectedEpoch + 1)}>
+								<MdOutlineArrowForwardIos className='rounded-lg' />
+							</button>
+						)}
+					</div>
 				</div>
-				<button className='border border-em-border-row btn btn-square min-h-8 h-8 w-8' onClick={() => changeEpoch(currentEpoch + 1)}>
-					<MdOutlineArrowForwardIos className='rounded-lg' />
-				</button>
+				<UserXEpochStatsBadge selectedEpoch={selectedEpoch} />
 			</div>
-			<UserXStats />
+			<UserXStats selectedEpoch={selectedEpoch} />
 			<div className='overflow-auto flex-1 rounded-[1.5rem] md:border border-solid border-em-border-row bg-em-card'>{renderTable()}</div>
 		</div>
 	);

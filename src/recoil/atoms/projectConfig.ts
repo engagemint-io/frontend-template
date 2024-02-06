@@ -10,6 +10,7 @@ type ProjectConfigResponse = {
 	video_view_multiplier: number;
 	view_multiplier: number;
 	admin_wallet_address: string;
+	pre_defined_tweet_text: string;
 };
 
 export const projectConfigState = atom<ProjectConfigResponse | null>({

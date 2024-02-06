@@ -5,7 +5,7 @@ const HomePage = () => {
 	const calculatorSection = useRef<HTMLDivElement>(null);
 
 	return (
-		<div className='flex flex-col p-6 md:p-[10rem] w-full overflow-auto gap-[8rem]'>
+		<div className='flex flex-col px-[1rem] py-[11.5rem] md:px-[10rem] md:py-[15rem] w-full overflow-auto gap-[8rem]'>
 			<ProjectInfo calculatorRef={calculatorSection} />
 			<PointInfo />
 			<PointCalculator ref={calculatorSection} />

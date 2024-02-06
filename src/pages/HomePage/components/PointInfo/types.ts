@@ -6,4 +6,6 @@ export type PointInfoItem = {
 	icon: IconType;
 	key: string;
 	title: string;
+	singular: string;
+	color: string;
 };

@@ -1,1 +1,3 @@
-export type UserXStatsProps = {};
+export type UserXStatsProps = {
+	selectedEpoch: number;
+};

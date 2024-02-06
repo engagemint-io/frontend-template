@@ -2,14 +2,13 @@ import { UserXStatsProps } from './types';
 import XIconWhite from '../../../../assets/x-icon-white.svg';
 import { ConnectXButton } from '../../../../components';
 import { useEffect, useState } from 'react';
-import { useCurrentEpoch, useXAccount } from '../../../../hooks';
+import { useXAccount } from '../../../../hooks';
 import { toast } from 'react-toastify';
 import { useRecoilState } from 'recoil';
 import { userStatsState } from '../../../../recoil/atoms';
 
-const UserXStats = ({}: UserXStatsProps) => {
+const UserXStats = ({ selectedEpoch }: UserXStatsProps) => {
 	const { xAccessToken } = useXAccount();
-	const { currentEpoch } = useCurrentEpoch();
 
 	const [userStats, setUserStats] = useRecoilState<any>(userStatsState);
 	const [fetchError, setFetchError] = useState<any>();
@@ -18,7 +17,7 @@ const UserXStats = ({}: UserXStatsProps) => {
 		const fetchUserStats = async () => {
 			try {
 				const response = await fetch(
-					`${import.meta.env.VITE_API_URL}/user-stats?ticker=${import.meta.env.VITE_TICKER}&epoch=${currentEpoch}&x_access_token=${xAccessToken}`
+					`${import.meta.env.VITE_API_URL}/user-stats?ticker=${import.meta.env.VITE_TICKER}&epoch=${selectedEpoch}&x_access_token=${xAccessToken}`
 				);
 				const json = await response.json();
 				if (json.status !== 'success') {
@@ -38,7 +37,7 @@ const UserXStats = ({}: UserXStatsProps) => {
 				setUserStats(data.stats);
 			});
 		}
-	}, [xAccessToken, currentEpoch]);
+	}, [xAccessToken, selectedEpoch]);
 
 	if (fetchError) {
 		return (

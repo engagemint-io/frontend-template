@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useXAccount } from '../useXAccount';
 import { useRecoilState } from 'recoil';
-import { isFetchingUserStatsState, userStatsState } from '../../recoil/atoms';
+import { isFetchingUserStatsState, userStatsState, userXAccountIdState } from '../../recoil/atoms';
 import { toast } from 'react-toastify';
 import { useCurrentEpoch } from '../useCurrentEpoch';
 
@@ -10,6 +10,7 @@ export const useDBUser = () => {
 	const { currentEpoch } = useCurrentEpoch();
 
 	const [userStats, setUserStats] = useRecoilState(userStatsState);
+	const [userXAccountId, setUserXAccountId] = useRecoilState(userXAccountIdState);
 	const [isFetching, setIsFetching] = useRecoilState(isFetchingUserStatsState);
 
 	const fetchUserStats = async () => {
@@ -27,7 +28,7 @@ export const useDBUser = () => {
 			}
 
 			sessionStorage.setItem('xCodeVerifier', json.data.xCodeVerifier);
-
+			console.log('json.data', json.data);
 			return json.data;
 		} catch {
 			console.log('Error fetching X auth url');
@@ -41,11 +42,12 @@ export const useDBUser = () => {
 
 		if (isFetching) return;
 
-		fetchUserStats().then((userStats) => {
-			setUserStats(userStats);
+		fetchUserStats().then((data) => {
+			setUserXAccountId(data.xAccountId);
+			setUserStats(data.stats);
 			setIsFetching(false);
 		});
 	}, [xAccessToken]);
 
-	return { isFetching, userStats };
+	return { isFetching, userStats, userXAccountId };
 };

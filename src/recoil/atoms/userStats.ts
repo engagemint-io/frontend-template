@@ -10,6 +10,11 @@ export const userStatsState = atom<any | null>({
 	default: null
 });
 
+export const userXAccountIdState = atom<string | null>({
+	key: 'EPOCH_USER_X_ACCOUNT_ID_STATE',
+	default: null
+});
+
 export const isFetchingUserStatsState = atom<boolean>({
 	key: 'IS_FETCHING_USER_STATS_STATE',
 	default: false

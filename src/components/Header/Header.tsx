@@ -34,7 +34,7 @@ const Header = () => {
 		if (xAccessToken && !userStats?.total_points)
 			return (
 				<button className='btn btn-secondary' onClick={() => showModal(registerModal)}>
-					register
+					REGISTER
 				</button>
 			);
 
@@ -42,7 +42,7 @@ const Header = () => {
 	};
 
 	return (
-		<div className='navbar flex flex-row justify-between items-center w-full gap-4 p-4 bg-[#23232599] h-[80px] min-h-[80px]'>
+		<div className='navbar flex flex-row justify-between items-center w-full gap-4 p-4 h-20 min-h-20 backdrop-blur-3xl bg-[#23232599] absolute z-50'>
 			<IoMenu className='md:hidden w-[32px] h-[32px]' width={32} height={32} onClick={() => showModal(menuModal)} />
 			<div className='flex-1'>
 				<img className='mt-[4px]' alt={`${import.meta.env.VITE_TICKER} logo`} src={ProjectLogo} />

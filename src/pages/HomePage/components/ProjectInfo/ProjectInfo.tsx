@@ -1,7 +1,7 @@
 import { ProjectInfoProps } from './types.ts';
 import { HeaderItem } from '../../types.ts';
 import ProjectHeroImage from '../../../../assets/project-hero.png';
-import { PiPlugsConnected, PiSealCheck } from 'react-icons/pi';
+import { PiPlugsConnected } from 'react-icons/pi';
 import { ConnectXButton } from '../../../../components/ConnectXButton';
 import { useXAccount } from '../../../../hooks';
 import { HEADER_ITEMS } from './config.tsx';
@@ -19,7 +19,9 @@ const ProjectInfo = ({ calculatorRef }: ProjectInfoProps) => {
 
 	const renderHeaderItem = (headerItem: HeaderItem) => {
 		return (
-			<div key={headerItem.title} className='h-fit card bg-em-card w-full md:w-96 border border-solid border-em-border-table shadow-xl py-12 px-6 gap-4'>
+			<div
+				key={headerItem.title}
+				className='h-fit card rounded-[2rem] bg-em-card w-full md:w-96 border border-solid border-em-border-table shadow-xl py-12 px-6 gap-4'>
 				<p className='text-em-headline text-xl font-bold tracking-tight'>{headerItem.title}</p>
 				<p>{headerItem.description}</p>
 				{headerItem.icon}
@@ -51,23 +53,25 @@ const ProjectInfo = ({ calculatorRef }: ProjectInfoProps) => {
 					className='btn btn-ghost rounded-xl min-h-10 h-10 border-[2px] border-em-border-row'
 					onClick={() => {
 						if (calculatorRef?.current) {
-							calculatorRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+							// TODO: Make this block 'start' on mobile and 'center' on desktop
+							calculatorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
 						}
 					}}>
 					CALCULATOR
 				</button>
 			</div>
 			<div className='flex flex-col md:flex-row flex-nowrap justify-between gap-6 items-center'>
-				<div className='card justify-start bg-em-link-secondary w-full md:w-96 border border-solid border-em-border-table shadow-xl py-[5rem] px-6 gap-4'>
+				<div className='card justify-start bg-em-link-secondary rounded-[2rem] w-full md:w-96 border border-solid border-em-border-table shadow-xl py-[5rem] px-6 gap-4'>
 					<p className='text-black text-xl font-bold tracking-tight'>Connect</p>
 					<p className='text-black'>Connect your X account</p>
-					{xProfileImageUrl ? (
-						<p>
-							<PiSealCheck /> connected
-						</p>
-					) : (
-						<ConnectXButton className='w-fit' />
-					)}
+					{/*{xProfileImageUrl ? (*/}
+					{/*	<p className='flex flex-row gap-2 items-center text-black'>*/}
+					{/*		<PiSealCheckBold /> connected*/}
+					{/*	</p>*/}
+					{/*) : (*/}
+					{/*	<ConnectXButton className='w-fit' />*/}
+					{/*)}					*/}
+					{xProfileImageUrl ? null : <ConnectXButton className='w-fit' />}
 					<PiPlugsConnected className='absolute top-4 right-4 h-12 w-12 text-black' />
 				</div>
 				{HEADER_ITEMS.map(renderHeaderItem)}
