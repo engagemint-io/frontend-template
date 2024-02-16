@@ -4,15 +4,19 @@ import XIcon from '../../assets/x-icon.svg';
 import cn from 'classnames';
 import { useXAccount } from '../../hooks';
 import { PiWarningDiamondFill } from 'react-icons/pi';
+import { isFetchingXAuthUrlState } from '../../recoil/atoms';
+import { useRecoilValue } from 'recoil';
 
 const ConnectXButton = ({ className }: ConnectXButtonProps) => {
-	const { xAccessToken, xAuthUrlResponse, xProfileImageUrl, logout } = useXAccount();
+	const { xAccountId, xAuthUrlResponse, xProfileImageUrl, logout } = useXAccount();
+
+	const isFetchingXAuthUrl = useRecoilValue(isFetchingXAuthUrlState);
 
 	if (xProfileImageUrl) {
 		return <img className='h-10 rounded-3xl cursor-pointer hover:opacity-80' alt='X user img' src={xProfileImageUrl} onClick={logout} />;
 	}
 
-	if (xAccessToken) {
+	if (xAccountId) {
 		return (
 			<button className={cn('btn btn-secondary', className)} onClick={logout}>
 				CONNECTED
@@ -31,11 +35,20 @@ const ConnectXButton = ({ className }: ConnectXButtonProps) => {
 			</Link>
 		);
 	}
+
+	if (!xAuthUrlResponse && !isFetchingXAuthUrl) {
+		return (
+			<button className='btn btn-error' disabled={true}>
+				<PiWarningDiamondFill />
+				connection error
+			</button>
+		);
+	}
+
 	return (
-		<button className='btn btn-error' disabled={true}>
-			<PiWarningDiamondFill />
-			connection error
-		</button>
+		<div className='flex flex-row justify-center items-center w-[127px] '>
+			<div className='loading' />
+		</div>
 	);
 };
 

@@ -16,6 +16,10 @@ const getEpochNumberForDateTime = (epochStartDate: string, epochLengthDays: numb
 	}
 
 	const diffInDays = searchDateTime.diff(startDate, 'days').days;
+
+	console.log('diffInDays', diffInDays);
+	console.log('epochLengthDays', epochLengthDays);
+
 	return Math.ceil(diffInDays / epochLengthDays);
 };
 
@@ -47,6 +51,7 @@ export const getCurrentEpochStartDate = (firstEpochStartDate: string, epochLengt
 	if (currentEpochNumber <= 0) {
 		throw new Error('Invalid epoch. The current epoch can only be 1 or greater.');
 	}
+
 	// Subtract 1 from the currentEpochNumber because the first epoch is considered as 1
 	const daysToAdd = (currentEpochNumber - 1) * epochLengthDays;
 	startDate = startDate.plus({ days: daysToAdd });
@@ -66,7 +71,9 @@ export const formatDateRange = (startDate: DateTime, endDate: DateTime): string 
 
 export const getFormattedDateRangeForEpoch = (firstEpochStartDate: string, epochLengthDays: number, epochNumber: number) => {
 	const startDate = DateTime.fromISO(firstEpochStartDate);
-	const daysToAdd = epochNumber * epochLengthDays;
+
+	// Subtract 1 from the currentEpochNumber because the first epoch is considered as 1
+	const daysToAdd = (epochNumber - 1) * epochLengthDays;
 	const epochStartDate = startDate.plus({ days: daysToAdd });
 	const epochEndDate = epochStartDate.plus({ days: epochLengthDays });
 	return formatDateRange(epochStartDate, epochEndDate);

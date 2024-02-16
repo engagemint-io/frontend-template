@@ -6,7 +6,7 @@ import { userStatsState } from '../../../../recoil/atoms';
 import { UserXEpochStatsBadgeProps } from './types.ts';
 
 const UserXEpochStatsBadge = ({ selectedEpoch }: UserXEpochStatsBadgeProps) => {
-	const { xAccessToken, xProfileImageUrl } = useXAccount();
+	const { xProfileImageUrl, xAccountId } = useXAccount();
 
 	const [userStats, setUserStats] = useRecoilState<any>(userStatsState);
 	const [fetchError, setFetchError] = useState<any>();
@@ -15,7 +15,7 @@ const UserXEpochStatsBadge = ({ selectedEpoch }: UserXEpochStatsBadgeProps) => {
 		const fetchUserStats = async () => {
 			try {
 				const response = await fetch(
-					`${import.meta.env.VITE_API_URL}/user-stats?ticker=${import.meta.env.VITE_TICKER}&epoch=${selectedEpoch}&x_access_token=${xAccessToken}`
+					`${import.meta.env.VITE_API_URL}/user-stats?ticker=${import.meta.env.VITE_TICKER}&epoch=${selectedEpoch}&x_user_id=${xAccountId}`
 				);
 				const json = await response.json();
 				if (json.status !== 'success') {
@@ -30,18 +30,18 @@ const UserXEpochStatsBadge = ({ selectedEpoch }: UserXEpochStatsBadgeProps) => {
 				return undefined;
 			}
 		};
-		if (xAccessToken) {
+		if (xAccountId) {
 			fetchUserStats()
 				.then((data: { stats?: any; profile_image_url: string }) => {
 					setFetchError(undefined);
 					setUserStats(data?.stats);
 				})
 				.catch((e) => {
-					console.log('Error fetching user stats', e);
+					console.error('Error fetching user stats', e);
 					setUserStats(undefined);
 				});
 		}
-	}, [xAccessToken, selectedEpoch]);
+	}, [xAccountId, selectedEpoch]);
 
 	if (fetchError) {
 		return (
@@ -51,22 +51,19 @@ const UserXEpochStatsBadge = ({ selectedEpoch }: UserXEpochStatsBadgeProps) => {
 		);
 	}
 
-	console.log('userStats', userStats);
-	if (xAccessToken) {
-		if (userStats) {
-			return (
-				<div className='flex flex-row items-center bg-primary gap-4 p-2 rounded-3xl'>
+	if (xAccountId && userStats) {
+		return (
+			<div className='flex flex-row items-center justify-between bg-primary gap-4 p-2 rounded-3xl'>
+				<div className='flex flex-row items-center gap-4'>
 					<img className='h-10 rounded-3xl cursor-pointer hover:opacity-80' alt='X user img' src={xProfileImageUrl} />
 					<div>
 						<p className='text-em-text-muted text-lg'>{userStats.total_points}</p>
 						<p>Total points</p>
 					</div>
-					<div className='bg-secondary'>#{userStats.rank}</div>
 				</div>
-			);
-		}
-
-		return null;
+				<div className='bg-black text-white p-2 rounded-xl'>#{userStats.rank}</div>
+			</div>
+		);
 	}
 
 	return null;

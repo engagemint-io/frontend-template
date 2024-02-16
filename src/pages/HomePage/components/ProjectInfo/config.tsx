@@ -4,7 +4,7 @@ import { PiChatTeardropText, PiHandCoins, PiSealCheck } from 'react-icons/pi';
 export const HEADER_ITEMS: HeaderItem[] = [
 	{
 		title: 'Share',
-		description: `Mention #${import.meta.env.VITE_TICKER} or $${import.meta.env.VITE_TICKER} in your tweets during each epoch to earn points and earn rewards`,
+		description: `Mention #${import.meta.env.VITE_TICKER} or $${import.meta.env.VITE_TICKER} in your tweets during each epoch to earn points and rewards`,
 		icon: <PiChatTeardropText className='absolute top-4 right-4 h-12 w-12 text-em-link-secondary' />
 	},
 	{

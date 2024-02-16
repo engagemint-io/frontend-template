@@ -1,15 +1,16 @@
 import Calendar, { TileArgs } from 'react-calendar';
 import { DateTime } from 'luxon';
 
-import { useCurrentEpoch, useDBProjectConfig } from '../../../../hooks';
-
 import './calendar-styles.css';
 import 'react-calendar/dist/Calendar.css';
 import { formatDateRange } from '../../../../utils';
+import { useRecoilValue } from 'recoil';
+import { projectConfigState } from '../../../../recoil/atoms';
+import { useCurrentEpoch } from '../../../../hooks';
 
 const EpochCalendar = () => {
 	const { currentEpoch, startDate, endDate } = useCurrentEpoch();
-	const { projectConfig } = useDBProjectConfig();
+	const projectConfig = useRecoilValue(projectConfigState);
 
 	const currentDate = DateTime.now();
 

@@ -8,16 +8,18 @@ import { useRecoilState } from 'recoil';
 import { userStatsState } from '../../../../recoil/atoms';
 
 const UserXStats = ({ selectedEpoch }: UserXStatsProps) => {
-	const { xAccessToken } = useXAccount();
+	const { xAccountId, xProfileImageUrl } = useXAccount();
 
 	const [userStats, setUserStats] = useRecoilState<any>(userStatsState);
 	const [fetchError, setFetchError] = useState<any>();
+
+	console.log('userStats', userStats);
 
 	useEffect(() => {
 		const fetchUserStats = async () => {
 			try {
 				const response = await fetch(
-					`${import.meta.env.VITE_API_URL}/user-stats?ticker=${import.meta.env.VITE_TICKER}&epoch=${selectedEpoch}&x_access_token=${xAccessToken}`
+					`${import.meta.env.VITE_API_URL}/user-stats?ticker=${import.meta.env.VITE_TICKER}&epoch=${selectedEpoch}&x_user_id=${xAccountId}`
 				);
 				const json = await response.json();
 				if (json.status !== 'success') {
@@ -31,13 +33,13 @@ const UserXStats = ({ selectedEpoch }: UserXStatsProps) => {
 				return undefined;
 			}
 		};
-		if (xAccessToken) {
+		if (xAccountId) {
 			fetchUserStats().then((data: { stats: any; profile_image_url: string }) => {
 				setFetchError(undefined);
 				setUserStats(data.stats);
 			});
 		}
-	}, [xAccessToken, selectedEpoch]);
+	}, [xAccountId, selectedEpoch]);
 
 	if (fetchError) {
 		return (
@@ -47,18 +49,45 @@ const UserXStats = ({ selectedEpoch }: UserXStatsProps) => {
 		);
 	}
 
-	if (xAccessToken) {
+	const renderPointType = (title: string, value: number) => {
+		return (
+			<div className='flex-1'>
+				<p className='text-em-headline font-bold text-2xl'>{value.toLocaleString()}</p>
+				<p className='text-em-paragraph text-md text-nowrap'>{title}</p>
+			</div>
+		);
+	};
+
+	const renderContent = () => {
 		if (userStats) {
 			return (
-				<div className='flex flex-row items-center justify-center w-full h-[5rem] rounded-[1.5rem] bg-em-card border border-solid border-em-border-table'>
-					<p className='text-em-text-muted text-lg'>Total points: {userStats.total_points}</p>
+				<div className='flex flex-col flex-wrap md:flex-row text-em-text-muted text-lg gap-4 w-full px-4'>
+					{renderPointType('view points', userStats.view_points)}
+					{renderPointType('video view points', userStats.video_view_points)}
+					{renderPointType('favorite points', userStats.favorite_points)}
+					{renderPointType('quote points', userStats.quote_points)}
+					{renderPointType('retweet points', userStats.retweet_points)}
 				</div>
 			);
 		}
 
 		return (
-			<div className='flex flex-row items-center justify-center w-full h-[5rem] rounded-[1.5rem] bg-em-card border border-solid border-em-border-table'>
+			<div className='flex justify-center items-center'>
 				<p className='text-em-text-muted text-center'>You did not participate in this epoch</p>
+			</div>
+		);
+	};
+
+	if (xAccountId) {
+		return (
+			<div className='flex flex-col items-start justify-center w-full rounded-[1.5rem] bg-em-border-row border border-solid border-em-border-table'>
+				<div className='flex flex-row p-4 items-center gap-4'>
+					<img alt='User Profile' src={xProfileImageUrl} className='w-8 h-8 rounded-full' />
+					<p>{xAccountId}</p>
+				</div>
+				<div className='flex flex-row items-center justify-center w-full rounded-[1.5rem] bg-em-card border border-solid border-em-border-table p-4 min-h-[94px]'>
+					{renderContent()}
+				</div>
 			</div>
 		);
 	}
