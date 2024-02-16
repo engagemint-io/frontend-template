@@ -1,53 +1,84 @@
 import { useEffect } from 'react';
 import { useXAccount } from '../useXAccount';
-import { useRecoilState } from 'recoil';
-import { isFetchingUserStatsState, userStatsState, userXAccountIdState } from '../../recoil/atoms';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { isFetchingUserRegisteredState, isFetchingUserStatsState, isUserRegisteredState, userStatsFetchError, userStatsState } from '../../recoil/atoms';
 import { toast } from 'react-toastify';
 import { useCurrentEpoch } from '../useCurrentEpoch';
 
 export const useDBUser = () => {
-	const { xAccessToken } = useXAccount();
+	const { xAccountId } = useXAccount();
 	const { currentEpoch } = useCurrentEpoch();
 
 	const [userStats, setUserStats] = useRecoilState(userStatsState);
-	const [userXAccountId, setUserXAccountId] = useRecoilState(userXAccountIdState);
-	const [isFetching, setIsFetching] = useRecoilState(isFetchingUserStatsState);
+	const [isFetchingUserStats, setIsFetchingUserStats] = useRecoilState(isFetchingUserStatsState);
+	const [isFetchingIsRegistered, setIsFetchingIsRegistered] = useRecoilState(isFetchingUserRegisteredState);
+	const [error, setError] = useRecoilState(userStatsFetchError);
+
+	const setIsUserRegistered = useSetRecoilState(isUserRegisteredState);
+
+	const fetchIsUserRegistered = async () => {
+		try {
+			setIsFetchingIsRegistered(true);
+			const url = new URL(`${import.meta.env.VITE_API_URL}/is-user-registered?ticker=${import.meta.env.VITE_TICKER}&x_user_id=${xAccountId}`);
+
+			const response = await fetch(url);
+			const json = await response.json();
+			return json.data;
+		} catch (e: any) {
+			setIsFetchingIsRegistered(false);
+			return;
+		}
+	};
 
 	const fetchUserStats = async () => {
 		try {
-			setIsFetching(true);
+			setIsFetchingUserStats(true);
 
-			const url = new URL(`${import.meta.env.VITE_API_URL}/user-stats?ticker=${import.meta.env.VITE_TICKER}&epoch=${currentEpoch}&x_access_token=${xAccessToken}`);
+			const url = new URL(`${import.meta.env.VITE_API_URL}/user-stats?ticker=${import.meta.env.VITE_TICKER}&epoch=${currentEpoch}&x_user_id=${xAccountId}`);
 
 			const res = await fetch(url);
 			const json = await res.json();
 
-			if (json.status !== 'success') {
-				toast.error(json.message);
+			if (!json['verified']) {
+				toast.error(json.error);
+				setError(json.error);
+				setIsFetchingUserStats(false);
 				return;
 			}
 
 			sessionStorage.setItem('xCodeVerifier', json.data.xCodeVerifier);
-			console.log('json.data', json.data);
 			return json.data;
-		} catch {
-			console.log('Error fetching X auth url');
-			setIsFetching(false);
+		} catch (e: any) {
+			toast.error('Error fetching user stats');
+			setIsFetchingUserStats(false);
+			setError(e.message);
 			return;
 		}
 	};
 
 	useEffect(() => {
-		if (!xAccessToken) return;
+		if (!xAccountId) return;
 
-		if (isFetching) return;
+		if (isFetchingUserStats) return;
 
 		fetchUserStats().then((data) => {
-			setUserXAccountId(data.xAccountId);
+			if (!data) return;
 			setUserStats(data.stats);
-			setIsFetching(false);
+			setIsFetchingUserStats(false);
 		});
-	}, [xAccessToken]);
+	}, [xAccountId]);
 
-	return { isFetching, userStats, userXAccountId };
+	useEffect(() => {
+		if (!xAccountId) return;
+
+		if (isFetchingIsRegistered) return;
+
+		fetchIsUserRegistered().then((data) => {
+			if (!data) return;
+			setIsUserRegistered(data['isRegistered']);
+			setIsFetchingIsRegistered(false);
+		});
+	}, [xAccountId]);
+
+	return { isFetching: isFetchingUserStats, userStats, error };
 };

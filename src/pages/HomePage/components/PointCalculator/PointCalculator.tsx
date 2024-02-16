@@ -1,10 +1,11 @@
 import { PointCalculatorProps, PointCalculatorItem } from './types.ts';
-import { useDBProjectConfig } from '../../../../hooks';
 import { Dispatch, forwardRef, SetStateAction, useMemo, useState } from 'react';
 import { LIKE_ITEM, QUOTE_ITEM, REPLY_ITEM, RETWEET_ITEM, VIDEO_VIEW_ITEM, VIEW_ITEM } from './utils';
+import { useRecoilValue } from 'recoil';
+import { projectConfigState } from '../../../../recoil/atoms';
 
 const PointCalculator = forwardRef<HTMLDivElement, PointCalculatorProps>(({}, ref) => {
-	const { projectConfig } = useDBProjectConfig();
+	const projectConfig = useRecoilValue(projectConfigState);
 
 	const viewCount = useState<number>(100);
 	const likesCount = useState<number>(100);
@@ -15,27 +16,27 @@ const PointCalculator = forwardRef<HTMLDivElement, PointCalculatorProps>(({}, re
 
 	const viewPoints = useMemo(() => {
 		return viewCount[0] * (projectConfig?.view_multiplier || 1);
-	}, [projectConfig?.view_multiplier]);
+	}, [viewCount[0], projectConfig?.view_multiplier]);
 
 	const videoViewPoints = useMemo(() => {
 		return videoViewsCount[0] * (projectConfig?.video_view_multiplier || 1);
-	}, [projectConfig?.video_view_multiplier]);
+	}, [videoViewsCount[0], projectConfig?.video_view_multiplier]);
 
 	const likePoints = useMemo(() => {
 		return likesCount[0] * (projectConfig?.like_multiplier || 1);
-	}, [projectConfig?.like_multiplier]);
+	}, [likesCount[0], projectConfig?.like_multiplier]);
 
 	const replyPoints = useMemo(() => {
 		return repliesCount[0] * (projectConfig?.reply_multiplier || 1);
-	}, [projectConfig?.reply_multiplier]);
+	}, [repliesCount[0], projectConfig?.reply_multiplier]);
 
 	const retweetPoints = useMemo(() => {
 		return retweetCount[0] * (projectConfig?.retweet_multiplier || 1);
-	}, [projectConfig?.retweet_multiplier]);
+	}, [retweetCount[0], projectConfig?.retweet_multiplier]);
 
 	const quotePoints = useMemo(() => {
 		return quotesCount[0] * (projectConfig?.quote_multiplier || 1);
-	}, [projectConfig?.quote_multiplier]);
+	}, [quotesCount[0], projectConfig?.quote_multiplier]);
 
 	const calculatedPoints = useMemo(() => {
 		return viewPoints + videoViewPoints + likePoints + replyPoints + retweetPoints + quotePoints;
@@ -81,9 +82,9 @@ const PointCalculator = forwardRef<HTMLDivElement, PointCalculatorProps>(({}, re
 	};
 
 	return (
-		<div className='flex flex-col gap-4'>
+		<div ref={ref} className='flex flex-col gap-4'>
 			<div className='flex flex-col md:flex-row justify-between md:items-center gap-4'>
-				<div ref={ref} className='flex flex-col p-4'>
+				<div className='flex flex-col p-4'>
 					<p className='text-em-headline text-[30px] font-extrabold leading-10 tracking-tight'>Point calculator</p>
 					<p className='text-em-paragraph text-[18px] leading-[27px]'>Earning points is simple - just use X/Twitter!</p>
 				</div>

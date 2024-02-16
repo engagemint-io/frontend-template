@@ -20,7 +20,7 @@ export const useDBProjectConfig = () => {
 
 			return json.data;
 		} catch {
-			console.log('Error fetching project config');
+			console.error('Error fetching project config');
 			return;
 		}
 	};

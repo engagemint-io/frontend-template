@@ -21,7 +21,7 @@ const ProjectInfo = ({ calculatorRef }: ProjectInfoProps) => {
 		return (
 			<div
 				key={headerItem.title}
-				className='h-fit card rounded-[2rem] bg-em-card w-full md:w-96 border border-solid border-em-border-table shadow-xl py-12 px-6 gap-4'>
+				className='h-fit card rounded-[2rem] bg-em-card w-full md:w-[47%] xl:w-96 border border-solid border-em-border-table shadow-xl py-12 px-6 gap-4'>
 				<p className='text-em-headline text-xl font-bold tracking-tight'>{headerItem.title}</p>
 				<p>{headerItem.description}</p>
 				{headerItem.icon}
@@ -30,11 +30,11 @@ const ProjectInfo = ({ calculatorRef }: ProjectInfoProps) => {
 	};
 
 	return (
-		<div className='flex flex-col gap-16'>
+		<div className='flex flex-col gap-16 m-w-[1360px]'>
 			<div className='relative flex flex-col md:flex-row-reverse justify-between gap-8 md:gap-[4rem]'>
 				<div className='relative flex justify-end'>
 					<div className='bg-primary absolute inset-0 bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-75 blur-[20rem]'></div>
-					<img src={ProjectHeroImage} className='w-[50%] md:w-fit md:h-fit self-start top-[-2rem] right-0' alt={`${import.meta.env.VITE_TICKER} header image`} />
+					<img src={ProjectHeroImage} className='w-[50%] lg:w-fit lg:h-fit self-start top-[-2rem] right-0' alt={`${import.meta.env.VITE_TICKER} header image`} />
 				</div>
 				<div className='flex flex-col justify-end gap-8'>
 					<h1 className='text-em-headline text-5xl md:text-[86px] leading-[48px] md:leading-[86px] font-extrabold max-w-full md:max-w-[720px]'>
@@ -60,17 +60,10 @@ const ProjectInfo = ({ calculatorRef }: ProjectInfoProps) => {
 					CALCULATOR
 				</button>
 			</div>
-			<div className='flex flex-col md:flex-row flex-nowrap justify-between gap-6 items-center'>
-				<div className='card justify-start bg-em-link-secondary rounded-[2rem] w-full md:w-96 border border-solid border-em-border-table shadow-xl py-[5rem] px-6 gap-4'>
+			<div className='flex flex-col md:flex-row flex-wrap xl:flex-nowrap justify-between gap-6 items-center'>
+				<div className='card justify-start bg-em-link-secondary rounded-[2rem] w-full  md:w-[47%] xl:w-96 border border-solid border-em-border-table shadow-xl py-[7rem] px-6 gap-4'>
 					<p className='text-black text-xl font-bold tracking-tight'>Connect</p>
 					<p className='text-black'>Connect your X account</p>
-					{/*{xProfileImageUrl ? (*/}
-					{/*	<p className='flex flex-row gap-2 items-center text-black'>*/}
-					{/*		<PiSealCheckBold /> connected*/}
-					{/*	</p>*/}
-					{/*) : (*/}
-					{/*	<ConnectXButton className='w-fit' />*/}
-					{/*)}					*/}
 					{xProfileImageUrl ? null : <ConnectXButton className='w-fit' />}
 					<PiPlugsConnected className='absolute top-4 right-4 h-12 w-12 text-black' />
 				</div>

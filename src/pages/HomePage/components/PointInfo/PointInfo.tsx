@@ -1,14 +1,14 @@
 import { PointInfoItem, PointInfoProps } from './types.ts';
-import { useDBProjectConfig } from '../../../../hooks';
 import { POINT_INFO_ITEMS } from './utils.tsx';
+import { useRecoilValue } from 'recoil';
+import { projectConfigState } from '../../../../recoil/atoms';
 
 const PointInfo = ({}: PointInfoProps) => {
-	const { projectConfig } = useDBProjectConfig();
+	const projectConfig = useRecoilValue(projectConfigState);
 
 	const renderPointInfoItem = (item: PointInfoItem) => {
-		console.log('item color', item.color);
 		return (
-			<div className='flex flex-row items-center justify-between py-4 px-8 w-full'>
+			<div key={item.key} className='flex flex-row items-center justify-between py-4 px-8 w-full'>
 				<div className='flex flex-row items-center gap-4'>
 					<item.icon className={`text-em-link-secondary w-8 h-8 ${item.color}`} />
 					<div>

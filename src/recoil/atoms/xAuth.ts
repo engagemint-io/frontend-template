@@ -11,12 +11,12 @@ export const xAuthUrlState = atom<XAuthUrlResponse | null>({
 	default: null
 });
 
-export const isFetchingXAccessTokenState = atom<boolean>({
-	key: 'IS_FETCHING_X_ACCESS_TOKEN_STATE',
+export const isFetchingXAuthUrlState = atom<boolean>({
+	key: 'IS_FETCHING_X_AUTH_URL_STATE',
 	default: false
 });
 
 export const xAccessTokenState = atom({
 	key: 'X_ACCESS_TOKEN_STATE',
-	default: sessionStorage.getItem('accessToken')
+	default: sessionStorage.getItem('accessToken') || undefined
 });

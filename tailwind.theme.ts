@@ -1,4 +1,10 @@
 const defaultThemeDark = {
+	extend: {
+		fontFamily: {
+			sans: ['Manrope', 'sans-serif'],
+			serif: ['Manrope', 'serif']
+		}
+	},
 	colors: {
 		white: '#ffffff',
 		black: '#000000',
@@ -43,8 +49,8 @@ const defaultThemeDark = {
 		'success-bg': '#56D69D',
 		error: '#5D0414',
 		'error-bg': '#ED667F',
-		warning: '#6B3605',
-		'warning-bg': '#F68B2A',
+		warning: '#EF7609',
+		'warning-bg': '#FBDFC7',
 		info: '#081961',
 		'info-bg': '#738AEE',
 		muted: '#1D2025',
