@@ -17,9 +17,6 @@ const getEpochNumberForDateTime = (epochStartDate: string, epochLengthDays: numb
 
 	const diffInDays = searchDateTime.diff(startDate, 'days').days;
 
-	console.log('diffInDays', diffInDays);
-	console.log('epochLengthDays', epochLengthDays);
-
 	return Math.ceil(diffInDays / epochLengthDays);
 };
 

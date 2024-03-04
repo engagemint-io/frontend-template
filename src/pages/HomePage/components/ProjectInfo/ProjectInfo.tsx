@@ -1,15 +1,24 @@
 import { ProjectInfoProps } from './types.ts';
 import { HeaderItem } from '../../types.ts';
-import ProjectHeroImage from '../../../../assets/project-hero.png';
 import { PiPlugsConnected } from 'react-icons/pi';
 import { ConnectXButton } from '../../../../components/ConnectXButton';
 import { useXAccount } from '../../../../hooks';
 import { HEADER_ITEMS } from './config.tsx';
+import { useNavigate } from 'react-router-dom';
+import useTailwindBreakpoint from '../../../../hooks/useTailwindBreakpoint';
 
 const ProjectInfo = ({ calculatorRef }: ProjectInfoProps) => {
-	const { xProfileImageUrl } = useXAccount();
+	const { xProfileImageUrl, isUserRegistered } = useXAccount();
+	const navigate = useNavigate();
+
+	const breakpoint = useTailwindBreakpoint();
 
 	const onClickGetStarted = () => {
+		if (isUserRegistered) {
+			navigate('/leaderboard');
+			return;
+		}
+
 		const element = document?.getElementById('register_modal');
 
 		if (!element) return;
@@ -30,14 +39,17 @@ const ProjectInfo = ({ calculatorRef }: ProjectInfoProps) => {
 	};
 
 	return (
-		<div className='flex flex-col gap-16 m-w-[1360px]'>
-			<div className='relative flex flex-col md:flex-row-reverse justify-between gap-8 md:gap-[4rem]'>
+		<div className='flex flex-col gap-16'>
+			<div className='flex flex-col md:flex-row-reverse justify-between gap-8 md:gap-[4rem]'>
 				<div className='relative flex justify-end'>
-					<div className='bg-primary absolute inset-0 bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-75 blur-[20rem]'></div>
-					<img src={ProjectHeroImage} className='w-[50%] lg:w-fit lg:h-fit self-start top-[-2rem] right-0' alt={`${import.meta.env.VITE_TICKER} header image`} />
+					<img
+						src={import.meta.env.VITE_LOGO_URL}
+						className='w-[50%] lg:w-fit lg:h-fit self-start top-[-2rem] right-0'
+						alt={`${import.meta.env.VITE_TICKER} header image`}
+					/>
 				</div>
 				<div className='flex flex-col justify-end gap-8'>
-					<h1 className='text-em-headline text-5xl md:text-[86px] leading-[48px] md:leading-[86px] font-extrabold max-w-full md:max-w-[720px]'>
+					<h1 className='text-em-headline text-4xl md:text-[72px] lg:text-[86px] leading-[48px] md:leading-[86px] font-extrabold max-w-full'>
 						{import.meta.env.VITE_PAGE_HEADER}
 					</h1>
 					<h4 className='text-em-paragraph font-medium leading-[32px] md:leading-[46px] text-[22px] md:text-[32px] tracking-tight max-w-[720px]'>
@@ -47,14 +59,14 @@ const ProjectInfo = ({ calculatorRef }: ProjectInfoProps) => {
 			</div>
 			<div className='flex flex-row gap-4'>
 				<button className='btn btn-primary rounded-xl min-h-10 h-10' onClick={onClickGetStarted}>
-					GET STARTED
+					{isUserRegistered ? 'VIEW LEADERBOARD' : 'GET STARTED'}
 				</button>
 				<button
 					className='btn btn-ghost rounded-xl min-h-10 h-10 border-[2px] border-em-border-row'
 					onClick={() => {
 						if (calculatorRef?.current) {
 							// TODO: Make this block 'start' on mobile and 'center' on desktop
-							calculatorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+							calculatorRef.current.scrollIntoView({ behavior: 'smooth', block: breakpoint.sm || breakpoint.md ? 'start' : 'center' });
 						}
 					}}>
 					CALCULATOR

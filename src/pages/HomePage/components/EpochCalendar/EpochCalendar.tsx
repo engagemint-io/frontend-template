@@ -37,16 +37,16 @@ const EpochCalendar = () => {
 	if (!currentEpoch || !startDate || !endDate) return null;
 
 	return (
-		<div className='flex flex-col card bg-em-card p-12 rounded-3xl gap-12'>
-			<div className='flex flex-row items-center justify-between'>
-				<div className='flex flex-col justify-start'>
-					<p className='text-em-headline text-4xl font-bold'>
+		<div className='flex flex-col card bg-em-card p-6 md:p-12 rounded-3xl gap-12'>
+			<div className='flex flex-col md:flex-row items-center justify-between gap-6'>
+				<div className='flex flex-col justify-start w-full'>
+					<p className='text-em-headline text-3xl md:text-4xl font-bold'>
 						Epochs in {currentDate.monthLong} {currentDate.year}
 					</p>{' '}
-					<p className='text-em-paragraph'>{projectConfig?.epoch_length_days} days per epoch</p>
+					<p className='hidden md:flex text-em-paragraph'>{projectConfig?.epoch_length_days} days per epoch</p>
 				</div>
 
-				<div className='flex flex-col justify-start items-end'>
+				<div className='flex flex-row-reverse md:flex-col justify-between md:justify-start items-start md:items-end w-full'>
 					<p className='text-xl text-em-headline font-medium'>{formatDateRange(startDate, endDate)}</p>
 					<p className='text-em-paragraph'>Current epoch</p>
 				</div>
