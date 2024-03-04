@@ -15,7 +15,6 @@ export const useCurrentEpoch = () => {
 		if (!projectConfig) return;
 
 		const updatedCurrentEpoch = getCurrentEpochNumber(projectConfig.epoch_start_date_utc, projectConfig.epoch_length_days);
-		console.log('updatedCurrentEpoch', updatedCurrentEpoch);
 		setCurrentEpoch(updatedCurrentEpoch);
 
 		const updatedCurrentEpochStartDate = getCurrentEpochStartDate(projectConfig.epoch_start_date_utc, projectConfig.epoch_length_days);

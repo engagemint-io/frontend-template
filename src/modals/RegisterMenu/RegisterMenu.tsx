@@ -1,8 +1,8 @@
 import { RegisterMenuProps } from './types';
 import { forwardRef, useState } from 'react';
 import { PiWarningCircleFill, PiXBold } from 'react-icons/pi';
-import { projectConfigState } from '../../recoil/atoms';
-import { useRecoilValue } from 'recoil';
+import { isUserRegisteredState, projectConfigState } from '../../recoil/atoms';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { useXAccount } from '../../hooks';
 import { useWallet } from '@sei-js/react';
 import { toast } from 'react-toastify';
@@ -14,6 +14,7 @@ const RegisterMenu = forwardRef<HTMLDialogElement, RegisterMenuProps>(({ hideMod
 	const [isRegistering, setIsRegistering] = useState(false);
 
 	const projectConfig = useRecoilValue(projectConfigState);
+	const setIsRegistered = useSetRecoilState(isUserRegisteredState);
 
 	const registerUser = async () => {
 		if (isRegistering) return;
@@ -60,15 +61,15 @@ const RegisterMenu = forwardRef<HTMLDialogElement, RegisterMenuProps>(({ hideMod
 					toast.success('Registration successful!');
 					hideModal();
 				}
-
+				setIsRegistered(true);
 				setIsRegistering(false);
 			} catch (error: any) {
-				console.log('registerUser error', error.message);
+				console.error('registerUser error', error.message);
 				toast.error(error.message);
 				setIsRegistering(false);
 			}
 		} catch (error: any) {
-			console.log('registerUser error', error.message);
+			console.error('registerUser error', error.message);
 			toast.error(error.message);
 			setIsRegistering(false);
 		}
@@ -113,7 +114,7 @@ const RegisterMenu = forwardRef<HTMLDialogElement, RegisterMenuProps>(({ hideMod
 						</button>
 					) : (
 						<button className='btn btn-primary w-full' onClick={registerUser}>
-							verify tweet & register
+							Verify Tweet & Register
 						</button>
 					)}
 				</div>

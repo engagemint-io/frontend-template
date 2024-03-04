@@ -12,6 +12,14 @@ const ConnectXButton = ({ className }: ConnectXButtonProps) => {
 
 	const isFetchingXAuthUrl = useRecoilValue(isFetchingXAuthUrlState);
 
+	if (isFetchingXAuthUrl) {
+		return (
+			<div className='flex flex-row justify-end items-center w-[127px] '>
+				<div className='loading' />
+			</div>
+		);
+	}
+
 	if (xProfileImageUrl) {
 		return <img className='h-10 rounded-3xl cursor-pointer hover:opacity-80' alt='X user img' src={xProfileImageUrl} onClick={logout} />;
 	}
@@ -46,7 +54,7 @@ const ConnectXButton = ({ className }: ConnectXButtonProps) => {
 	}
 
 	return (
-		<div className='flex flex-row justify-center items-center w-[127px] '>
+		<div className='flex flex-row justify-end items-center w-[127px] '>
 			<div className='loading' />
 		</div>
 	);

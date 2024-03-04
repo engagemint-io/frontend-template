@@ -27,10 +27,16 @@ const Leaderboard = () => {
 	const [fetchError, setFetchError] = useState<any>();
 	const [leaderboard, setLeaderboard] = useState<LeaderboardRow[]>();
 
-	const selectedEpoch = useMemo(() => parseInt((queryParams?.epoch as string) || '1'), [queryParams]);
+	useEffect(() => {
+		changeEpoch(currentEpoch);
+	}, [currentEpoch]);
+
+	const selectedEpoch = useMemo(() => parseInt((queryParams?.epoch as string) || String(currentEpoch)), [queryParams]);
 
 	useEffect(() => {
 		const fetchLeaderboard = async () => {
+			if (!selectedEpoch) return;
+
 			try {
 				const response = await fetch(`${import.meta.env.VITE_API_URL}/leaderboard?ticker=${import.meta.env.VITE_TICKER}&epoch=${selectedEpoch}`);
 				const json = await response.json();
@@ -141,7 +147,7 @@ const Leaderboard = () => {
 
 	return (
 		<>
-			<div className='flex flex-col px-[1rem] py-[8rem] md:px-[5rem] md:py-[8rem] lg:px-[10rem] lg:py-[10rem] overflow-auto h-screen w-full gap-4'>
+			<div className='flex flex-col px-[1rem] py-[8rem] md:px-[5rem] md:py-[8rem] lg:px-[10rem] lg:py-[10rem] overflow-auto h-screen w-full gap-4 max-w-[1280px]'>
 				<div className='flex flex-col md:flex-row justify-between md:items-center gap-4 w-full'>
 					<div>
 						<h1 className='text-em-headline text-3xl md:text-5xl font-bold tracking-tight mb-4'>Leaderboard</h1>

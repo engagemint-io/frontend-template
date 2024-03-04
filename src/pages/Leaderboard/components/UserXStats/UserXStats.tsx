@@ -8,12 +8,10 @@ import { useRecoilState } from 'recoil';
 import { userStatsState } from '../../../../recoil/atoms';
 
 const UserXStats = ({ selectedEpoch }: UserXStatsProps) => {
-	const { xAccountId, xProfileImageUrl } = useXAccount();
+	const { xAccountId, xProfileImageUrl, xUsername } = useXAccount();
 
 	const [userStats, setUserStats] = useRecoilState<any>(userStatsState);
 	const [fetchError, setFetchError] = useState<any>();
-
-	console.log('userStats', userStats);
 
 	useEffect(() => {
 		const fetchUserStats = async () => {
@@ -83,7 +81,9 @@ const UserXStats = ({ selectedEpoch }: UserXStatsProps) => {
 			<div className='flex flex-col items-start justify-center w-full rounded-[1.5rem] bg-em-border-row border border-solid border-em-border-table'>
 				<div className='flex flex-row p-4 items-center gap-4'>
 					<img alt='User Profile' src={xProfileImageUrl} className='w-8 h-8 rounded-full' />
-					<p>{xAccountId}</p>
+					<p className='text-xl'>
+						@<span className='text-white font-black'>{xUsername}</span>
+					</p>
 				</div>
 				<div className='flex flex-row items-center justify-center w-full rounded-[1.5rem] bg-em-card border border-solid border-em-border-table p-4 min-h-[94px]'>
 					{renderContent()}

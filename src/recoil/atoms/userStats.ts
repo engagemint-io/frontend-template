@@ -15,6 +15,11 @@ export const userXAccountIdState = atom<string | null>({
 	default: sessionStorage.getItem('xAccountId')
 });
 
+export const xUsernameState = atom<string | null>({
+	key: 'X_USERNAME_STATE',
+	default: sessionStorage.getItem('xUsername')
+});
+
 export const isFetchingUserStatsState = atom<boolean>({
 	key: 'IS_FETCHING_USER_STATS_STATE',
 	default: false
@@ -30,7 +35,7 @@ export const userStatsFetchError = atom<string>({
 	default: undefined
 });
 
-export const isUserRegisteredState = atom<boolean>({
+export const isUserRegisteredState = atom<boolean | undefined>({
 	key: 'IS_USER_REGISTERED_STATE',
 	default: undefined
 });

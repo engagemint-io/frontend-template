@@ -1,5 +1,4 @@
 import { MobileMenuProps } from './types';
-import ProjectLogo from '../../assets/project-logo.svg';
 import { IoClose } from 'react-icons/io5';
 import { HEADER_LINKS } from '../../components/Header/config.ts';
 import { HeaderLink } from '../../components/Header/types.ts';
@@ -52,7 +51,7 @@ const MobileMenu = forwardRef<HTMLDialogElement, MobileMenuProps>(({ hideModal }
 			<div className='modal-box bg-em-card rounded-none min-h-full h-full w-full p-0 flex flex-col'>
 				<div className='flex flex-row items-center justify-start gap-4 w-full p-4 border-b border-solid border-em-border-row'>
 					<IoClose className='h-[32px] w-[32px]' width={32} height={32} onClick={hideModal} />
-					<img className='mt-[4px]' alt={`${import.meta.env.VITE_TICKER} logo`} src={ProjectLogo} />
+					<img className='mt-[4px] h-[40px] w-[40px]' alt={`${import.meta.env.VITE_TICKER} logo`} src={import.meta.env.VITE_LOGO_URL} />
 				</div>
 				<div className='flex flex-col justify-between p-8 flex-1'>
 					<div className='flex flex-col gap-4'>{renderMenuUserStats()}</div>

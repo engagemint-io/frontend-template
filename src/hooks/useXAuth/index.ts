@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useEffect, useMemo } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { isFetchingXAuthUrlState, userXAccountIdState, xAccessTokenState, xAuthUrlState, xProfileImageUrlState } from '../../recoil/atoms';
+import { isFetchingXAuthUrlState, userXAccountIdState, xAccessTokenState, xAuthUrlState, xProfileImageUrlState, xUsernameState } from '../../recoil/atoms';
 
 export const useXAuth = () => {
 	const location = useLocation();
@@ -13,6 +13,7 @@ export const useXAuth = () => {
 	const setXAuthUrlResponse = useSetRecoilState(xAuthUrlState);
 	const setXProfileImageUrl = useSetRecoilState(xProfileImageUrlState);
 	const setXAccountId = useSetRecoilState(userXAccountIdState);
+	const setXUsername = useSetRecoilState(xUsernameState);
 	const setIsFetchingAuthUrl = useSetRecoilState(isFetchingXAuthUrlState);
 
 	// Get the 'code' query param from the URL, which is returned by X (Twitter) after the user logs in
@@ -40,7 +41,8 @@ export const useXAuth = () => {
 				accessToken: json.data['xAccessToken'],
 				expiresIn: json.data['expiresIn'],
 				profileImageUrl: json.data['profileImageUrl'],
-				xUserId: json.data['xUserId']
+				xUserId: json.data['xUserId'],
+				xUsername: json.data['xUsername']
 			};
 		} catch (error: any) {
 			console.error(error);
@@ -58,6 +60,7 @@ export const useXAuth = () => {
 
 	const fetchXAuthUrl = async () => {
 		try {
+			setIsFetchingAuthUrl(true);
 			const url = new URL(`${import.meta.env.VITE_API_URL}/x-auth-url`);
 			const params = { redirectUrl: `${window.location.origin}/` };
 			url.search = new URLSearchParams(params).toString();
@@ -67,6 +70,7 @@ export const useXAuth = () => {
 
 			if (json.status !== 'success') {
 				toast.error(json.message);
+				setIsFetchingAuthUrl(false);
 				return;
 			}
 
@@ -89,6 +93,9 @@ export const useXAuth = () => {
 		if (isXAccessTokenExpired) {
 			sessionStorage.removeItem('accessToken');
 			sessionStorage.removeItem('tokenExpiry');
+			sessionStorage.removeItem('profileImageUrl');
+			sessionStorage.removeItem('xAccountId');
+			sessionStorage.removeItem('xUsername');
 			setXAccessToken('');
 		}
 	}, [isXAccessTokenExpired]);
@@ -99,12 +106,15 @@ export const useXAuth = () => {
 			exchangeCodeForToken(code).then((response) => {
 				navigate(location.pathname);
 				if (!response) return;
-				const { accessToken, expiresIn, profileImageUrl, xUserId } = response;
+				const { accessToken, expiresIn, profileImageUrl, xUserId, xUsername } = response;
 				toast.info('Successfully connected to X (Twitter)');
 				storeXAccessToken(accessToken, expiresIn);
 
 				sessionStorage.setItem('xAccountId', xUserId);
 				setXAccountId(xUserId);
+
+				sessionStorage.setItem('xUsername', xUsername);
+				setXUsername(xUsername);
 
 				sessionStorage.setItem('profileImageUrl', profileImageUrl);
 				setXProfileImageUrl(profileImageUrl);
@@ -114,7 +124,6 @@ export const useXAuth = () => {
 
 	useEffect(() => {
 		if (xAccessToken) return;
-		setIsFetchingAuthUrl(true);
 
 		fetchXAuthUrl().then((xAuthUrlResponse) => {
 			setIsFetchingAuthUrl(false);
