@@ -1,30 +1,25 @@
-# React + TypeScript + Vite
+# EngageMint Frontend Template
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a template for the frontend of EngageMint projects. It is based on Vite and is set up for any project already registered with EngageMint.
 
-Currently, two official plugins are available:
+## Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Clone this repository
+- Run `yarn install`
+- Create a .env.local file and add the following:
+  ```
+  VITE_TICKER='YOUR PROJECT TICKER'
+  VITE_PAGE_HEADER="YOUR PAGE TITLE"
+  VITE_PAGE_DESCRIPTION="YOUR PAGE DESCRIPTION"
+  VITE_LOGO_URL="YOUR LOGO URL"
+  ```
 
-## Expanding the ESLint configuration
+## Development
+Run `yarn dev` to start the development server.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Customization
+- Change the icons in the `public` folder
+- Change the colors in the `./project-theme.ts` file
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Deployment
+Run `yarn build` to build the project. The output will be in the `dist` folder.
